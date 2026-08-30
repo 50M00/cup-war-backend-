@@ -8,7 +8,7 @@
    راجع backend/README.md لخطوات النشر الكاملة، ثم عدّل السطر التالي
    ليشير لرابط خادمك بعد نشره:
 =================================================================== */
-const OTP_API_BASE = "https://YOUR-BACKEND-URL.onrender.com"; // ⚠️ استبدل هذا برابط خادم backend/ بعد نشره (راجع backend/README.md)
+const OTP_API_BASE = "https://github.com/50M00/cup-war-backend-.git"; // ⚠️ استبدل هذا برابط خادم backend/ بعد نشره (راجع backend/README.md)
 
 const BADGE_DEFS = [
   { id: "first", icon: "🥉", label: "أول مشترى", test: s => s.purchases >= 1 },
