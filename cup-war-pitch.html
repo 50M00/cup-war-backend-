@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CUP WAR — عرض المشروع</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14110D;
+    --bg-soft: #1A1510;
+    --panel: #211A13;
+    --panel-2: #271F17;
+    --coffee: #6B4226;
+    --coffee-glow: #A16136;
+    --tea: #1F6B45;
+    --tea-glow: #3DA06D;
+    --gold: #C98A3E;
+    --text: #F2ECE4;
+    --text-dim: #9C8F80;
+    --text-faint: #6B5F52;
+    --border: rgba(255,240,225,0.08);
+    --font-display: 'Cairo', sans-serif;
+    --font-body: 'Tajawal', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  ::selection { background: var(--gold); color: #0D1013; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display);
+    font-weight: 800; font-size: 13px; color: var(--gold); letter-spacing: 0.5px;
+    background: rgba(201,138,62,0.08); border: 1px solid rgba(201,138,62,0.25);
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .section { padding: 110px 0; position: relative; }
+  .section-title {
+    font-family: var(--font-display); font-weight: 900; font-size: clamp(28px, 4vw, 46px);
+    line-height: 1.2; margin-bottom: 16px;
+  }
+  .section-lead { color: var(--text-dim); font-size: clamp(16px, 1.6vw, 19px); max-width: 640px; }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+
+  /* ---------- top ticker ---------- */
+  .ticker-bar {
+    position: sticky; top: 0; z-index: 60; background: #08090B; border-bottom: 1px solid var(--border);
+    overflow: hidden; white-space: nowrap; height: 34px; display: flex; align-items: center;
+  }
+  .ticker-track { display: inline-flex; align-items: center; gap: 48px; animation: tickerScroll 32s linear infinite; padding-inline-start: 100%; }
+  .ticker-item { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); display: inline-flex; align-items: center; gap: 8px; }
+  .ticker-item b { color: var(--gold); font-weight: 700; }
+  @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 34px; z-index: 55; backdrop-filter: blur(14px);
+    background: rgba(13,16,19,0.75); border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { max-width: 1120px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 900; font-size: 17px; letter-spacing: 0.5px; }
+  .brand-logo { height: 26px; width: auto; }
+  .brand .dot { color: var(--gold); }
+  .nav-links { display: flex; gap: 26px; list-style: none; }
+  .nav-links a { font-size: 13.5px; color: var(--text-dim); font-weight: 500; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    font-family: var(--font-display); font-weight: 800; font-size: 13px; color: #0D1013;
+    background: linear-gradient(90deg, var(--coffee-glow), var(--gold)); padding: 9px 18px; border-radius: 999px;
+    text-decoration: none;
+  }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 90px 0 70px; position: relative;
+    background:
+      radial-gradient(ellipse 900px 500px at 18% -10%, rgba(107,66,38,0.20), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 82% -10%, rgba(31,107,69,0.20), transparent 60%);
+  }
+  .hero-inner { text-align: center; }
+  .hero-logo { height: 110px; width: auto; margin: 0 auto 12px; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5)); }
+  .hero h1 {
+    font-family: var(--font-display); font-weight: 900; font-size: clamp(52px, 10vw, 108px);
+    letter-spacing: 1px; line-height: 1; margin: 6px 0 18px;
+    background: linear-gradient(95deg, var(--coffee-glow) 5%, var(--gold) 48%, var(--tea-glow) 95%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-sub {
+    font-size: clamp(17px, 2vw, 21px); color: var(--text-dim); max-width: 620px; margin: 0 auto 46px;
+    font-weight: 500;
+  }
+
+  /* ---------- broadcast scoreboard ---------- */
+  .board {
+    max-width: 760px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 24px; padding: 36px 30px 28px; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6);
+  }
+  .board-row { display: flex; align-items: center; justify-content: center; gap: 34px; margin-bottom: 20px; }
+  .board-side { flex: 1; text-align: center; }
+  .board-emoji { font-size: 34px; margin-bottom: 6px; }
+  .board-label { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--text-dim); margin-bottom: 6px; }
+  .board-num { font-family: var(--font-mono); font-weight: 700; font-size: clamp(40px, 7vw, 64px); line-height: 1; }
+  .board-num.coffee { color: var(--coffee-glow); text-shadow: 0 0 30px rgba(161,97,54,0.35); }
+  .board-num.tea { color: var(--tea-glow); text-shadow: 0 0 30px rgba(61,160,109,0.35); }
+  .board-vs {
+    font-family: var(--font-display); font-weight: 900; font-size: 15px; color: var(--gold);
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 999px; padding: 10px 16px;
+    animation: vsPulse 2.6s ease-in-out infinite;
+  }
+  @keyframes vsPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(201,138,62,0.35);} 50% { box-shadow: 0 0 0 8px rgba(201,138,62,0);} }
+  .board-track { height: 14px; border-radius: 999px; background: var(--panel-2); overflow: hidden; display: flex; }
+  .board-fill { transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+  .board-fill.coffee { background: linear-gradient(90deg, var(--coffee), var(--coffee-glow)); }
+  .board-fill.tea { background: linear-gradient(90deg, var(--tea-glow), var(--tea)); }
+  .board-caption { text-align: center; margin-top: 14px; font-size: 13.5px; color: var(--text-dim); }
+  .hero-top-players { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; }
+  .hero-top-players-title { font-family: var(--font-display); font-weight: 800; font-size: 13px; color: var(--gold); margin-bottom: 10px; }
+  .hero-top-chip { display: inline-block; background: var(--panel-2); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12.5px; margin: 3px; font-family: var(--font-mono); }
+
+  .hero-scroll { margin-top: 40px; display: flex; justify-content: center; }
+  .hero-scroll a {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none;
+    color: var(--text-faint); font-size: 12px; font-family: var(--font-mono);
+  }
+  .hero-scroll svg { animation: bounce 2s ease-in-out infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0);} 50% { transform: translateY(6px);} }
+
+  /* ---------- concept statement ---------- */
+  .concept { text-align: center; }
+  .concept-statement {
+    font-family: var(--font-display); font-weight: 800; font-size: clamp(24px, 4vw, 40px); line-height: 1.5;
+    max-width: 820px; margin: 0 auto;
+  }
+  .concept-statement .hl-coffee { color: var(--coffee-glow); }
+  .concept-statement .hl-tea { color: var(--tea-glow); }
+  .concept-note { margin-top: 28px; color: var(--text-dim); font-size: 15.5px; max-width: 620px; margin-inline: auto; }
+
+  /* ---------- how it works timeline ---------- */
+  .timeline { margin-top: 60px; position: relative; }
+  .timeline::before {
+    content: ""; position: absolute; top: 0; bottom: 0; right: 27px; width: 2px;
+    background: linear-gradient(180deg, var(--coffee-glow), var(--gold), var(--tea-glow));
+  }
+  .tl-item { display: flex; gap: 24px; padding-bottom: 42px; position: relative; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-num {
+    flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%; background: var(--panel);
+    border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 700; font-size: 18px; color: var(--gold); z-index: 2;
+  }
+  .tl-body { padding-top: 8px; }
+  .tl-title { font-family: var(--font-display); font-weight: 800; font-size: 19px; margin-bottom: 6px; }
+  .tl-desc { color: var(--text-dim); font-size: 15px; max-width: 560px; }
+
+  /* ---------- demo section ---------- */
+  .demo-section { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .demo-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: start; margin-top: 50px; }
+  @media (max-width: 860px) { .demo-grid { grid-template-columns: 1fr; } }
+
+  .demo-board { background: var(--panel); border: 1px solid var(--border); border-radius: 22px; padding: 28px 24px; }
+  .demo-controls { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+  .demo-btn {
+    flex: 1; min-width: 160px; font-family: var(--font-display); font-weight: 800; font-size: 14px;
+    border: none; border-radius: 14px; padding: 15px; cursor: pointer; color: #0D1013;
+    transition: transform 0.15s ease;
+  }
+  .demo-btn:active { transform: scale(0.97); }
+  .demo-btn.coffee { background: linear-gradient(90deg, var(--coffee), var(--coffee-glow)); }
+  .demo-btn.tea { background: linear-gradient(90deg, var(--tea-glow), var(--tea)); }
+  .demo-toggle-row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; }
+  .demo-toggle-label { font-size: 13.5px; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
+  .switch { position: relative; width: 42px; height: 24px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch-track { position: absolute; inset: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+  .switch-track::before { content:""; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--text-dim); top: 2px; right: 3px; transition: transform 0.2s, background 0.2s; }
+  .switch input:checked + .switch-track { background: rgba(201,138,62,0.25); border-color: var(--gold); }
+  .switch input:checked + .switch-track::before { transform: translateX(-18px); background: var(--gold); }
+  .demo-reset { margin-top: 14px; width: 100%; background: none; border: 1px dashed var(--border); color: var(--text-faint); border-radius: 12px; padding: 10px; font-size: 12.5px; font-family: var(--font-body); cursor: pointer; }
+  .demo-open-app {
+    display: block; margin-top: 10px; width: 100%; text-align: center; text-decoration: none;
+    font-family: var(--font-display); font-weight: 800; font-size: 13.5px; color: #0D1013;
+    background: linear-gradient(90deg, var(--coffee-glow), var(--gold) 55%, var(--tea-glow));
+    border-radius: 12px; padding: 12px;
+  }
+
+  .demo-side { display: flex; flex-direction: column; gap: 16px; }
+  .demo-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; }
+  .demo-panel-title { font-family: var(--font-display); font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .demo-player-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .demo-player-row:last-child { border-bottom: none; }
+  .demo-player-rank { font-family: var(--font-mono); color: var(--text-faint); width: 18px; }
+  .demo-player-name { flex: 1; }
+  .demo-player-pts { font-family: var(--font-mono); font-weight: 700; color: var(--gold); }
+  .demo-flash {
+    position: fixed; top: 90px; left: 50%; transform: translateX(-50%); background: var(--panel-2);
+    border: 1px solid var(--gold); color: var(--text); padding: 10px 20px; border-radius: 999px;
+    font-size: 13px; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s;
+  }
+  .demo-flash.show { opacity: 1; transform: translate(-50%, 8px); }
+  .demo-badge-pop {
+    display: flex; align-items: center; gap: 8px; background: rgba(201,138,62,0.1); border: 1px solid rgba(201,138,62,0.35);
+    border-radius: 12px; padding: 10px 14px; font-size: 13px; color: var(--gold); margin-top: 10px;
+  }
+
+  /* ---------- features grid ---------- */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 54px; }
+  @media (max-width: 860px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .features-grid { grid-template-columns: 1fr; } }
+  .feature-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 24px 22px;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .feature-card:hover { transform: translateY(-4px); border-color: rgba(201,138,62,0.4); }
+  .feature-icon { font-size: 26px; margin-bottom: 14px; }
+  .feature-title { font-family: var(--font-display); font-weight: 800; font-size: 16px; margin-bottom: 8px; }
+  .feature-desc { color: var(--text-dim); font-size: 13.8px; }
+
+  /* ---------- tech strip ---------- */
+  .tech-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px; }
+  @media (max-width: 760px) { .tech-cols { grid-template-columns: 1fr; } }
+  .tech-col { border-top: 2px solid var(--gold); padding-top: 18px; }
+  .tech-col h3 { font-family: var(--font-display); font-weight: 800; font-size: 15px; margin-bottom: 8px; }
+  .tech-col p { color: var(--text-dim); font-size: 13.8px; }
+
+  /* ---------- roadmap ---------- */
+  .roadmap { display: flex; flex-direction: column; gap: 0; margin-top: 54px; }
+  .rm-phase { display: grid; grid-template-columns: 90px 1fr; gap: 22px; padding: 26px 0; border-bottom: 1px solid var(--border); }
+  .rm-phase:last-child { border-bottom: none; }
+  .rm-tag { font-family: var(--font-mono); font-weight: 700; color: var(--gold); font-size: 13px; }
+  .rm-title { font-family: var(--font-display); font-weight: 800; font-size: 17px; margin-bottom: 6px; }
+  .rm-desc { color: var(--text-dim); font-size: 14.5px; }
+  .rm-status { display: inline-block; margin-top: 10px; font-size: 11.5px; font-family: var(--font-mono); padding: 3px 10px; border-radius: 999px; }
+  .rm-status.ready { background: rgba(61,160,109,0.12); color: var(--tea-glow); border: 1px solid rgba(61,160,109,0.3); }
+  .rm-status.next { background: rgba(201,138,62,0.1); color: var(--gold); border: 1px solid rgba(201,138,62,0.3); }
+  .rm-status.later { background: rgba(139,149,163,0.1); color: var(--text-dim); border: 1px solid var(--border); }
+
+  /* ---------- cta ---------- */
+  .cta-section { text-align: center; padding: 130px 0 110px; }
+  .cta-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(30px, 5vw, 54px); margin-bottom: 18px; }
+  .cta-sub { color: var(--text-dim); font-size: 16.5px; max-width: 480px; margin: 0 auto 36px; }
+  .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: var(--font-display); font-weight: 800; font-size: 15px; color: #0D1013;
+    background: linear-gradient(90deg, var(--coffee-glow), var(--gold) 55%, var(--tea-glow)); padding: 15px 30px;
+    border-radius: 14px; text-decoration: none; border: none; cursor: pointer;
+  }
+  .btn-ghost {
+    font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--text);
+    background: none; border: 1px solid var(--border); padding: 15px 30px; border-radius: 14px;
+    text-decoration: none; cursor: pointer;
+  }
+
+  footer { border-top: 1px solid var(--border); padding: 30px 0; text-align: center; color: var(--text-faint); font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><img src="assets/logo-icon.png" alt="BREZZO" class="brand-logo"> CUP WAR</div>
+    <ul class="nav-links">
+      <li><a href="#concept">الفكرة</a></li>
+      <li><a href="#how">كيف تشتغل</a></li>
+      <li><a href="#demo">جرّبها</a></li>
+      <li><a href="#features">المزايا</a></li>
+      <li><a href="#roadmap">خارطة الطريق</a></li>
+    </ul>
+    <a class="nav-cta" href="index.html" target="_blank" rel="noopener">افتح التطبيق ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-inner">
+    <img src="assets/logo.png" alt="BREZZO" class="hero-logo">
+    <div class="eyebrow">🏆 عرض تقديمي من BREZZO — منصة منافسة جامعية</div>
+    <h1>CUP WAR</h1>
+    <p class="hero-sub">كل قهوة تشتريها من ماكينة BREZZO تتحول لنقطة في معركة حقيقية بين فريقين — ☕ القهوة و🍵 الشاي. مش مجرد ماكينة قهوة، هذا ملعب.</p>
+
+    <div class="board">
+      <div class="board-row">
+        <div class="board-side">
+          <div class="board-emoji">☕</div>
+          <div class="board-label">فريق القهوة</div>
+          <div class="board-num coffee" id="heroCoffee">—</div>
+        </div>
+        <div class="board-vs">VS</div>
+        <div class="board-side">
+          <div class="board-emoji">🍵</div>
+          <div class="board-label">فريق الشاي</div>
+          <div class="board-num tea" id="heroTea">—</div>
+        </div>
+      </div>
+      <div class="board-track">
+        <div class="board-fill coffee" id="heroFillCoffee" style="width:50%"></div>
+        <div class="board-fill tea" id="heroFillTea" style="width:50%"></div>
+      </div>
+      <div class="board-caption" id="heroCaption">⏳ جارِ تحميل النتيجة الحية...</div>
+    </div>
+    <div id="heroTopPlayers"></div>
+
+    <div class="hero-scroll">
+      <a href="#concept">
+        انزل تشوف القصة كاملة
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="section concept" id="concept">
+  <div class="wrap">
+    <p class="concept-statement reveal">
+      ماكينة القهوة موجودة أصلًا. <span class="hl-coffee">CUP WAR</span> ما يغيّرها —
+      يحوّل كل زبون يشتري منها إلى <span class="hl-tea">لاعب في فريق</span>.
+    </p>
+    <p class="concept-note reveal">
+      بدل ما تكون عملية الشراء لحظة عادية، تصير لحظة فيها هوية، منافسة، وفخر جماعي.
+      النتيجة: طلاب يرجعون للماكينة أكثر، مو بس عشان يبون قهوة — عشان يبون فريقهم يفوز.
+    </p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="eyebrow reveal">⚙️ كيف تشتغل</div>
+    <h2 class="section-title reveal">من مسح QR إلى نقطة على اللوحة</h2>
+    <p class="section-lead reveal">خمس خطوات بسيطة، كل شي فيها مصمم عشان يبقى الهدف التجاري الحقيقي (بيع القهوة) هو أساس النظام.</p>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-num">1</div>
+        <div class="tl-body">
+          <div class="tl-title">مسح QR على الماكينة</div>
+          <div class="tl-desc">الطالب يمسح رمز موجود على الماكينة نفسها وينشئ حساب بثوانٍ — اسم، رقم جامعي، رقم هاتف.</div>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">2</div>
+        <div class="tl-body">
+          <div class="tl-title">اختيار الفريق</div>
+          <div class="tl-desc">☕ فريق القهوة أو 🍵 فريق الشاي — قرار بسيط، بس هو اللي يحدد وين تروح نقاطه لبقية الموسم.</div>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">3</div>
+        <div class="tl-body">
+          <div class="tl-title">شراء عادي من الماكينة</div>
+          <div class="tl-desc">ما فيه أي تغيير على تجربة الشراء نفسها — يدفع ويشرب زي أي يوم عادي.</div>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">4</div>
+        <div class="tl-body">
+          <div class="tl-title">تسجيل العملية</div>
+          <div class="tl-desc">عملية الشراء الحقيقية تُسجَّل من الإدارة (أو تلقائيًا مستقبلًا عبر ربط بالماكينة) — مو الطالب اللي يمنح نفسه النقطة، عشان النظام ما يصير قابل للتلاعب.</div>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">5</div>
+        <div class="tl-body">
+          <div class="tl-title">النقاط تتحدث لحظيًا</div>
+          <div class="tl-desc">فريقه +1، هو شخصيًا +1، وLeaderboard كامل الجامعة يشوف النتيجة تتغير أمامه.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DEMO -->
+<section class="section demo-section" id="demo">
+  <div class="wrap">
+    <div class="eyebrow reveal">🎮 جرّبها بنفسك</div>
+    <h2 class="section-title reveal">هذا مو تصميم ثابت — هذا يشتغل فعلًا</h2>
+    <p class="section-lead reveal">اضغط الأزرار وشوف كيف تتحرك اللوحة، النقاط، والأوسمة بلحظتها. البيانات هنا تجريبية بس المنطق نفسه بالضبط اللي بيشتغل بالتطبيق الحقيقي.</p>
+
+    <div class="demo-grid">
+      <div class="demo-board reveal">
+        <div class="board-row" style="margin-bottom:16px">
+          <div class="board-side">
+            <div class="board-emoji">☕</div>
+            <div class="board-num coffee" id="demoCoffee">428</div>
+          </div>
+          <div class="board-vs">VS</div>
+          <div class="board-side">
+            <div class="board-emoji">🍵</div>
+            <div class="board-num tea" id="demoTea">391</div>
+          </div>
+        </div>
+        <div class="board-track">
+          <div class="board-fill coffee" id="demoFillCoffee" style="width:52%"></div>
+          <div class="board-fill tea" id="demoFillTea" style="width:48%"></div>
+        </div>
+        <div class="board-caption" id="demoCaption">🔥 القهوة متقدمة بـ37 نقطة</div>
+
+        <div class="demo-controls">
+          <button class="demo-btn coffee" id="btnCoffee">☕ سجّل شراء قهوة</button>
+          <button class="demo-btn tea" id="btnTea">🍵 سجّل شراء شاي</button>
+        </div>
+
+        <div class="demo-toggle-row">
+          <span class="demo-toggle-label">⚡ نقاط مضاعفة (تجربة)</span>
+          <label class="switch">
+            <input type="checkbox" id="doubleToggle">
+            <span class="switch-track"></span>
+          </label>
+        </div>
+
+        <button class="demo-reset" id="demoReset">إعادة ضبط الديمو</button>
+        <a class="demo-open-app" href="index.html" target="_blank" rel="noopener">🚀 عجبتك؟ افتح التطبيق الحقيقي</a>
+      </div>
+
+      <div class="demo-side reveal">
+        <div class="demo-panel">
+          <div class="demo-panel-title">⭐ أفضل اللاعبين (تجريبي)</div>
+          <div id="demoPlayerList"></div>
+        </div>
+        <div class="demo-panel">
+          <div class="demo-panel-title">🎖️ محاكاة نظام الأوسمة</div>
+          <p style="color:var(--text-dim); font-size:13px; margin-bottom:4px;">كل 5 عمليات شراء بالديمو تفتح وسام جديد — نفس منطق التطبيق الحقيقي بالضبط.</p>
+          <div id="demoBadgeArea"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="demo-flash" id="demoFlash"></div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="eyebrow reveal">🧩 المزايا</div>
+    <h2 class="section-title reveal">كل شي يحتاجه موسم منافسة كامل</h2>
+    <p class="section-lead reveal">مو بس نقاط وLeaderboard — نظام متكامل يخلي المنافسة تعيش لأسابيع، مو يوم وحد وتنطفي.</p>
+
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Leaderboard حي</div>
+        <div class="feature-desc">ترتيب الفرق واللاعبين يتحدث لحظة بلحظة، ومصمم يكون أول شي يفتحه الطالب بيومه.</div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">تحديات جماعية</div>
+        <div class="feature-desc">"أول فريق يوصل 50 عملية شراء ياخذ +10" — أهداف تخلي الفريق كله يتحرك مع بعض.</div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">نقاط مضاعفة</div>
+        <div class="feature-desc">ساعات ذروة تختارها الإدارة تصير كل عملية شراء فيها نقطتين — أداة تسويقية مباشرة لزيادة المبيعات.</div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🎖️</div>
+        <div class="feature-title">أوسمة وإنجازات</div>
+        <div class="feature-desc">من أول عملية شراء إلى 25 مشترى — أوسمة تلقائية تخلي الطالب يحس بتقدمه الشخصي مو بس نقاط باردة.</div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🎁</div>
+        <div class="feature-title">جوائز مرتبطة بالماكينة</div>
+        <div class="feature-desc">جوائز الموسم والمشاركين تُصمَّم عمدًا عشان تشجع رجوع الطالب للماكينة، مو تبعده عنها.</div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">حسابات آمنة</div>
+        <div class="feature-desc">تسجيل دخول حقيقي، حساب إدارة منفصل، واستعادة كلمة مرور عبر رمز تحقق يُرسل لرقم الهاتف.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section class="section" style="background: var(--bg-soft); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="wrap">
+    <div class="eyebrow reveal">🛠️ خلف الكواليس</div>
+    <h2 class="section-title reveal">مبني بشكل بسيط، وقابل يكبر</h2>
+    <p class="section-lead reveal">لا تعقيد زايد بالبداية — نظام يقدر يطلق كـMVP بأسبوع، وله مسار واضح للتوسع لاحقًا.</p>
+
+    <div class="tech-cols">
+      <div class="tech-col reveal">
+        <h3>واجهة خفيفة وسريعة</h3>
+        <p>تصميم Mobile-first لأن كل تفاعل الطالب يصير من تلفونه بعد مسح QR — بدون تطبيق يثبّته، بدون تسجيل معقّد.</p>
+      </div>
+      <div class="tech-col reveal">
+        <h3>بيانات حية ومحفوظة</h3>
+        <p>النقاط، الفرق، والتحديات تُحفظ بشكل دائم وتظهر لكل المستخدمين لحظيًا — مو بيانات وهمية تختفي بإعادة التحميل.</p>
+      </div>
+      <div class="tech-col reveal">
+        <h3>أمان بطبقة إضافية</h3>
+        <p>خادم منفصل ومستقل يتولى إرسال رموز التحقق عبر SMS، عشان أي معلومة حساسة ما تكون متاحة من داخل المتصفح.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap">
+  <div class="wrap">
+    <div class="eyebrow reveal">🗺️ خارطة الطريق</div>
+    <h2 class="section-title reveal">مو لازم نبني كل شي بيوم واحد</h2>
+    <p class="section-lead reveal">نطلق بأقل نسخة تثبت الفكرة، وبعدها نضيف حسب رد فعل الطلاب الفعلي — مو حسب تخميناتنا.</p>
+
+    <div class="roadmap">
+      <div class="rm-phase reveal">
+        <div class="rm-tag">المرحلة 1</div>
+        <div>
+          <div class="rm-title">MVP — الأساس</div>
+          <div class="rm-desc">تسجيل الطالب، اختيار الفريق، تسجيل الشراء من الإدارة، حساب النقاط، وLeaderboard حي.</div>
+          <span class="rm-status ready">✅ جاهز الآن</span>
+        </div>
+      </div>
+      <div class="rm-phase reveal">
+        <div class="rm-tag">المرحلة 2</div>
+        <div>
+          <div class="rm-title">التفاعل والتحفيز</div>
+          <div class="rm-desc">التحديات الجماعية، الجوائز، الأوسمة، ونظام النقاط المضاعفة بأوقات محددة.</div>
+          <span class="rm-status next">🔜 التالي</span>
+        </div>
+      </div>
+      <div class="rm-phase reveal">
+        <div class="rm-tag">المرحلة 3</div>
+        <div>
+          <div class="rm-title">الأتمتة الكاملة</div>
+          <div class="rm-desc">ربط مباشر بنظام دفع/API الماكينة، بحيث تُسجَّل كل عملية شراء تلقائيًا بدون تدخل الإدارة.</div>
+          <span class="rm-status later">🔮 لاحقًا</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="wrap">
+    <div class="eyebrow reveal" style="justify-content:center; display:inline-flex;">🚀 جاهزين نطلقها؟</div>
+    <h2 class="cta-title reveal">أول رشفة قهوة بالموسم<br>تبدأ الحرب.</h2>
+    <p class="cta-sub reveal">MVP جاهز يطلق الآن. كل شي بعده قرار نسويه سوا حسب اللي يحبه الطلاب فعلًا.</p>
+    <div class="cta-buttons reveal">
+      <a class="btn-primary" href="index.html" target="_blank" rel="noopener">🚀 افتح التطبيق الحقيقي</a>
+      <a class="btn-ghost" href="#demo">جرّب الديمو الحي أولًا</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  عرض تقديمي لمشروع CUP WAR من BREZZO — منصة منافسة جامعية بين القهوة والشاي ☕🍵
+</footer>
+
+<script>
+/* ---------- ticker ---------- */
+const tickerItems = [
+  "🚨 القهوة قلبت النتيجة!",
+  "🍵 الشاي يتقدم لأول مرة هذا الأسبوع",
+  "🔥 نقاط مضاعفة اليوم من 10 إلى 12",
+  "🏆 بقي 3 أيام على نهاية الموسم",
+  "⚡ فريق القهوة يقترب من تحدي الـ50 عملية شراء",
+  "🎖️ محمد أول لاعب يفتح وسام الـ25 مشترى",
+];
+const track = document.getElementById("tickerTrack");
+[...tickerItems, ...tickerItems].forEach(t => {
+  const span = document.createElement("span");
+  span.className = "ticker-item";
+  span.innerHTML = t.replace(/(\d+)/g, "<b>$1</b>");
+  track.appendChild(span);
+});
+
+/* ---------- scroll reveal ---------- */
+const revealEls = document.querySelectorAll(".reveal");
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in-view"); io.unobserve(e.target); } });
+}, { threshold: 0.15 });
+revealEls.forEach(el => io.observe(el));
+
+/* ---------- real live stats (pulled from the actual app's storage) ---------- */
+const heroState = { coffee: 0, tea: 0, hasData: false, topPlayers: [] };
+
+async function getSharedKey(key) {
+  try {
+    if (!window.storage) return null;
+    const res = await window.storage.get(key, true);
+    return res ? JSON.parse(res.value) : null;
+  } catch { return null; }
+}
+
+async function loadRealStats() {
+  const [students, teamBonus] = await Promise.all([
+    getSharedKey("students"),
+    getSharedKey("teamBonus"),
+  ]);
+  if (!students || Object.keys(students).length === 0) {
+    heroState.hasData = false;
+    renderHero();
+    return;
+  }
+  const totals = { coffee: teamBonus?.coffee || 0, tea: teamBonus?.tea || 0 };
+  Object.values(students).forEach(s => { totals[s.team] = (totals[s.team] || 0) + (s.points || 0); });
+  heroState.coffee = totals.coffee;
+  heroState.tea = totals.tea;
+  heroState.hasData = true;
+  heroState.topPlayers = Object.values(students).sort((a, b) => b.points - a.points).slice(0, 5);
+  renderHero();
+}
+
+function renderHero() {
+  const emoji = { coffee: "☕", tea: "🍵" };
+  const playersEl = document.getElementById("heroTopPlayers");
+  if (!heroState.hasData) {
+    document.getElementById("heroCoffee").textContent = "0";
+    document.getElementById("heroTea").textContent = "0";
+    document.getElementById("heroFillCoffee").style.width = "50%";
+    document.getElementById("heroFillTea").style.width = "50%";
+    document.getElementById("heroCaption").textContent = "🚀 الموسم لسا ما بدأ — جرّب الديمو تحت لتشوف كيف بيكون الشكل وقت يبدأ التسجيل";
+    playersEl.innerHTML = "";
+    return;
+  }
+  document.getElementById("heroCoffee").textContent = heroState.coffee;
+  document.getElementById("heroTea").textContent = heroState.tea;
+  const total = Math.max(heroState.coffee + heroState.tea, 1);
+  const pct = (heroState.coffee / total) * 100;
+  document.getElementById("heroFillCoffee").style.width = pct + "%";
+  document.getElementById("heroFillTea").style.width = (100 - pct) + "%";
+  const diff = heroState.coffee - heroState.tea;
+  document.getElementById("heroCaption").textContent =
+    diff === 0 ? "🔥 تعادل تام — نتيجة حية فعلية من الموسم الحالي" :
+    diff > 0 ? `🔥 القهوة متقدمة بـ${diff} نقطة — نتيجة حية فعلية من الموسم الحالي` :
+    `🔥 الشاي متقدم بـ${Math.abs(diff)} نقطة — نتيجة حية فعلية من الموسم الحالي`;
+
+  if (heroState.topPlayers.length > 0) {
+    playersEl.innerHTML = `
+      <div class="hero-top-players">
+        <div class="hero-top-players-title">⭐ المتصدرون الآن (بيانات حقيقية)</div>
+        ${heroState.topPlayers.map((p, i) => `
+          <span class="hero-top-chip">${i + 1}. ${emoji[p.team]} ${p.name} — ${p.points}</span>
+        `).join("")}
+      </div>`;
+  } else {
+    playersEl.innerHTML = "";
+  }
+}
+
+loadRealStats();
+setInterval(loadRealStats, 15000); // تحديث دوري للأرقام الحقيقية
+
+/* ---------- live demo ---------- */
+const demoState = {
+  coffee: 428, tea: 391, doubleActive: false, clicks: 0,
+  players: [
+    { name: "محمد", team: "coffee", pts: 31 },
+    { name: "علي", team: "tea", pts: 28 },
+    { name: "حسين", team: "coffee", pts: 25 },
+    { name: "أحمد", team: "tea", pts: 22 },
+    { name: "مصطفى", team: "coffee", pts: 20 },
+  ],
+};
+const badgeSteps = [
+  { at: 5, icon: "🥉", label: "أول 5 عمليات شراء بالديمو" },
+  { at: 10, icon: "🔥", label: "10 عمليات — الحماس يرتفع" },
+  { at: 20, icon: "👑", label: "20 عملية — أنت رسميًا مدمن ديمو" },
+];
+
+function renderDemo() {
+  document.getElementById("demoCoffee").textContent = demoState.coffee;
+  document.getElementById("demoTea").textContent = demoState.tea;
+  const total = Math.max(demoState.coffee + demoState.tea, 1);
+  const pct = (demoState.coffee / total) * 100;
+  document.getElementById("demoFillCoffee").style.width = pct + "%";
+  document.getElementById("demoFillTea").style.width = (100 - pct) + "%";
+  const diff = demoState.coffee - demoState.tea;
+  document.getElementById("demoCaption").textContent =
+    diff === 0 ? "🔥 تعادل تام" :
+    diff > 0 ? `🔥 القهوة متقدمة بـ${diff} نقطة` :
+    `🔥 الشاي متقدم بـ${Math.abs(diff)} نقطة`;
+
+  const sorted = [...demoState.players].sort((a, b) => b.pts - a.pts);
+  const emoji = { coffee: "☕", tea: "🍵" };
+  document.getElementById("demoPlayerList").innerHTML = sorted.map((p, i) => `
+    <div class="demo-player-row">
+      <span class="demo-player-rank">${i + 1}</span>
+      <span class="demo-player-name">${emoji[p.team]} ${p.name}</span>
+      <span class="demo-player-pts">${p.pts}</span>
+    </div>
+  `).join("");
+}
+
+function flash(msg) {
+  const el = document.getElementById("demoFlash");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(flash._t);
+  flash._t = setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+function registerDemoPurchase(team) {
+  const pts = demoState.doubleActive ? 2 : 1;
+  const before = demoState.coffee - demoState.tea;
+  demoState[team] += pts;
+  demoState.clicks += 1;
+
+  const teamPlayers = demoState.players.filter(p => p.team === team);
+  const lucky = teamPlayers[Math.floor(Math.random() * teamPlayers.length)];
+  lucky.pts += pts;
+
+  renderDemo();
+
+  const after = demoState.coffee - demoState.tea;
+  if ((before <= 0 && after > 0) || (before >= 0 && after < 0)) {
+    flash(team === "coffee" ? "🚨 القهوة قلبت النتيجة!" : "🚨 الشاي قلب النتيجة!");
+  } else {
+    flash(`+${pts} نقطة لفريق ${team === "coffee" ? "☕ القهوة" : "🍵 الشاي"}`);
+  }
+
+  const badge = badgeSteps.find(b => b.at === demoState.clicks);
+  if (badge) {
+    const area = document.getElementById("demoBadgeArea");
+    const pop = document.createElement("div");
+    pop.className = "demo-badge-pop";
+    pop.innerHTML = `<span>${badge.icon}</span><span>فتحت: ${badge.label}</span>`;
+    area.prepend(pop);
+  }
+}
+
+document.getElementById("btnCoffee").addEventListener("click", () => registerDemoPurchase("coffee"));
+document.getElementById("btnTea").addEventListener("click", () => registerDemoPurchase("tea"));
+document.getElementById("doubleToggle").addEventListener("change", (e) => {
+  demoState.doubleActive = e.target.checked;
+  flash(demoState.doubleActive ? "⚡ تفعيل النقاط المضاعفة بالديمو" : "تم إيقاف النقاط المضاعفة");
+});
+document.getElementById("demoReset").addEventListener("click", () => {
+  demoState.coffee = 428; demoState.tea = 391; demoState.clicks = 0; demoState.doubleActive = false;
+  demoState.players = [
+    { name: "محمد", team: "coffee", pts: 31 },
+    { name: "علي", team: "tea", pts: 28 },
+    { name: "حسين", team: "coffee", pts: 25 },
+    { name: "أحمد", team: "tea", pts: 22 },
+    { name: "مصطفى", team: "coffee", pts: 20 },
+  ];
+  document.getElementById("doubleToggle").checked = false;
+  document.getElementById("demoBadgeArea").innerHTML = "";
+  renderDemo();
+  flash("تمت إعادة ضبط الديمو");
+});
+
+renderDemo();
+</script>
+</body>
+</html>
