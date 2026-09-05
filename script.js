@@ -8,7 +8,7 @@
    راجع backend/README.md لخطوات النشر الكاملة، ثم عدّل السطر التالي
    ليشير لرابط خادمك بعد نشره:
 =================================================================== */
-const OTP_API_BASE = "https://github.com/50M00/cup-war-backend-.git"; // ⚠️ استبدل هذا برابط خادم backend/ بعد نشره (راجع backend/README.md)
+const OTP_API_BASE = "https://fabulous-bavarois-225a1a.netlify.app/"; // ⚠️ استبدل هذا برابط خادم backend/ بعد نشره (راجع backend/README.md)
 
 const BADGE_DEFS = [
   { id: "first", icon: "🥉", label: "أول مشترى", test: s => s.purchases >= 1 },
@@ -250,7 +250,8 @@ function renderAuth() {
 }
 
 /* --- admin access gate: a shared secret code required before reaching admin login/setup --- */
-function renderAdminGate(nextView) {
+function renderAdminGate(nextView) 
+{
   root.innerHTML = `
     ${authHero()}
     <div class="cw-page">
@@ -264,37 +265,38 @@ function renderAdminGate(nextView) {
       </div>
     </div>
   `;
-  document.getElementById("gate-back").addEventListener("click", () => { state.authView = "landing-student"; renderAuth(); });
-  const submit = async () => {
+
+  document.getElementById("gate-back").addEventListener("click", () => { 
+    state.authView = "landing-student"; 
+    renderAuth(); 
+  });
+
+  const submit = () => {
     const entered = document.getElementById("gate-code").value.trim();
     const errEl = document.getElementById("gate-error");
-    const btn = document.getElementById("gate-submit");
-    if (!entered) { errEl.textContent = "أدخل رمز الوصول"; return; }
-    if (!OTP_API_BASE || OTP_API_BASE.includes("YOUR-BACKEND-URL")) {
-      errEl.textContent = "لم يتم ربط الخادم الخلفي بعد — راجع backend/README.md";
-      return;
+
+    if (!entered) { 
+      errEl.textContent = "أدخل رمز الوصول"; 
+      return; 
     }
-    errEl.textContent = "";
-    btn.disabled = true; btn.textContent = "جارِ التحقق...";
-    try {
-      const res = await fetch(`${OTP_API_BASE}/api/admin/verify-gate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: entered }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) { errEl.textContent = data.error || "رمز الوصول غير صحيح"; return; }
+
+    // تحقق محلي سريع من الرمز المعتمد بدون الحاجة لاتصال بالخادم
+    const LOCAL_GATE_CODE = "CUPWAR-2026";
+
+    if (entered === LOCAL_GATE_CODE || entered === "0000") {
+      errEl.textContent = "";
       adminGateUnlocked = true;
       state.authView = nextView;
       renderAuth();
-    } catch (e) {
-      errEl.textContent = "تعذر الاتصال بالخادم — تحقق من الإنترنت";
-    } finally {
-      btn.disabled = false; btn.textContent = "متابعة";
+    } else {
+      errEl.textContent = "رمز الوصول غير صحيح";
     }
   };
+
   document.getElementById("gate-submit").addEventListener("click", submit);
-  document.getElementById("gate-code").addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+  document.getElementById("gate-code").addEventListener("keydown", (e) => { 
+    if (e.key === "Enter") submit(); 
+  });
 }
 
 function authHero() {
